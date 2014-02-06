@@ -1,5 +1,5 @@
 {
-    "name": "jucceveju/flowchart-bundle",
+    "name": "juceveju/flowchart-bundle",
     "type": "symfony-bundle",
     "description": "Symfony2 bundle for generating flowcharts using jsPlumb javascript library",
     "keywords": ["jquery", "flowchart", "bundle", "jsplumb"],
