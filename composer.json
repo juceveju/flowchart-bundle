@@ -1,0 +1,23 @@
+{
+    "name": "jucceveju/flowchart-bundle",
+    "type": "symfony-bundle",
+    "description": "Symfony2 bundle for generating flowcharts using jsPlumb javascript library",
+    "keywords": ["jquery", "flowchart", "bundle", "jsplumb"],
+    "homepage": "http://github.com/juceveju/flowchart-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Julio César Velasco",
+            "email": "juceveju@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.2",
+        "symfony/framework-bundle": "2.*"
+    },
+    "autoload": {
+        "psr-0": { "Juceveju\\FlowchartBundle": "" }
+    },
+    "minimum-stability": "stable",
+    "target-dir": "Juceveju/FlowchartBundle"
+}

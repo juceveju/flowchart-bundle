@@ -1,0 +1,7 @@
+parameters:
+#    juceveju_flowchart.example.class: Juceveju\FlowchartBundle\Example
+
+services:
+#    juceveju_flowchart.example:
+#        class: %juceveju_flowchart.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
