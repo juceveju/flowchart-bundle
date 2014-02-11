@@ -10,28 +10,32 @@
 
 namespace Juceveju\FlowchartBundle\Model;
 
+use Juceveju\FlowchartBundle\Model\Connection;
+
 interface ElementInterface
 {
 
     /**
-     * return the name of the flowchart
      *
-     * @return string
+     * return the name of the element
      */
     public function getName();
 
-    /**
-     * return all incoming connections in the element
-     *
-     * @return array of Connections
-     */
-    public function getIncomingConnections(); 
+	/**
+	*
+	* Set the name of the element
+ 	*/
+	public function setName($name);
 
     /**
-     * return all outgoing connections in the element
      *
-     * @return array of Connections
+     * return the id of the element
      */
-    public function getOutgoingConnections(); 
-    
+	public function getId();
+
+	/**
+	*
+	* Set the id of the element
+ 	*/
+	public function setId($id);
 }

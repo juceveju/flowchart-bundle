@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+    <!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+    <!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+    <!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+    <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="keywords" content="Flowchart designer" />
+        <meta name="description" content="Flowchart designer" />
+    </head
+
+    <body>
+        <!-- flowchart toolbar container -->
+        <div id='flowchart-toolbar' class='flowchart-toolbar'>
+            {% include "toolbar.html.twig" %}
+        <div>
+
+        <!-- flowchart stencil container -->
+        <div id='flowchart-stencil' class='flowchart-stencil'>
+            {% include "stencil.html.twig" %}
+        <div>
+
+        <!-- flowchart paper container -->
+        <div id='flowchart-paper' class='flowchart-paper'>
+            {% include "paper.html.twig" %}
+        <div>
+
+        <!-- flowchart inspector container -->
+        <div id='flowchart-inspector' class='flowchart-inspector'>
+        <div>
+
+        <!-- flowchart status bar container -->
+        <div id='flowchart-statusbar' class='flowchart-statusbar'>
+            {% include "statusbar.html.twig" %}
+        <div>
+
+    	{% block flowchart_component %}  
+    	{% endblock %} 
+	</body>
+
+	{% block javascripts %}  
+	<!-- Assets for flowchart bundle -->
+		<script type="text/javascript" src="{{ asset('js/jsPlumb/lib/jquery-1.9.0-min.js') }}"></script>
+		<script type="text/javascript" src="{{ asset(jsplumb_path) }}"></script>
+	{% endblock %} 
+</html>
