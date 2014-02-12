@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Flowchart: Bundle for wrapping and encapsulate the behaviour of the one flow chart
  * http://symfony.com/doc/current/cookbook/doctrine/resolve_target_entity.html
@@ -14,6 +15,7 @@ namespace Juceveju\FlowchartBundle\Model;
 use Juceveju\FlowchartBundle\Model\Element;
 use Juceveju\FlowchartBundle\Model\Entry;
 use Juceveju\FlowchartBundle\Model\Ending;
+use Juceveju\FlowchartBundle\Model\Node;
 use Juceveju\FlowchartBundle\Model\Connection;
 
 class Flowchart implements FlowchartInterface
@@ -23,8 +25,18 @@ class Flowchart implements FlowchartInterface
 	protected $elements = array();
 	protected $entries  = array();
 	protected $endings  = array();
+	protected $nodes    = array();
 	protected $connections = array();
 	//protected $itineraries  = array();
+
+	public function __construct($name, $elements=array(), $connections=array())
+	{
+		$this->setName($name);
+		foreach ($elements as $element) 
+			$this->addElement($element);
+		foreach ($connections as $connections) 
+			$this->addConnection($connection);		
+	}
 
 	/**
 	*
@@ -45,7 +57,10 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function setName($name)
 	{
-		$this->name = $name;
+		if(empty($name))
+			throw new \Exception("The Flowchart name cannot be empty", 500);
+		else
+			$this->name = $name;
 	}
 
 	/**
@@ -68,30 +83,45 @@ class Flowchart implements FlowchartInterface
 	public function addElement(Element $element)
 	{
 		// @TODO: check that name and id are uniques
-		$this->elements[] = $element;
+		switch (get_class($element)) {
+			case 'Juceveju\FlowchartBundle\Model\Node':
+				$this->addNode($element);
+				break;
+			case 'Juceveju\FlowchartBundle\Model\Entry':
+				$this->addEntry($element);
+				break;
+			case 'Juceveju\FlowchartBundle\Model\Ending':
+				$this->addEnding($element);
+				break;			
+			default:
+				throw new \Exception("Error while adding the element: The Element has an invalid type", 500);
+				break;
+		}
 	}
 
 	/**
 	*
-	* remove an item from the elements array
+	* remove an item from the elements array. If the element is removed returnstrue, if the element does not
+	* exists remove false and if the type of element is invalid an exception is thrown
 	*
 	* @param Element $element
  	*/
-	public function removeElement($element)
+	public function removeElement(Element $element)
 	{
-		if ($element instanceof Juceveju\FlowchartBundle\Model\Entry)
-			return $this->removeEntry($element);
-		elseif ($element instanceof Juceveju\FlowchartBundle\Model\Ending)
-			return $this->removeEnding($element);
-		else {
-			foreach ($this->elements as $key => $elm) {
-				if ($elm->getId() == $element->getId()){
-					unset($this->elements[$key]);
-					return true;
-				}
-			}	
-			return false;		
-		}
+		switch (get_class($element)) {
+			case 'Juceveju\FlowchartBundle\Model\Node':
+				return $this->removeNode($element);
+				break;
+			case 'Juceveju\FlowchartBundle\Model\Entry':
+				return $this->removeEntry($element);
+				break;
+			case 'Juceveju\FlowchartBundle\Model\Ending':
+				return $this->removeEnding($element);
+				break;
+			default:
+				throw new \Exception("Error while removing the element: The Element has an invalid type", 500);
+				break;
+		}		
 	}
 
 	/**
@@ -107,6 +137,134 @@ class Flowchart implements FlowchartInterface
 
 	/**
 	*
+	* returns an instance of Juceveju\FlowchartBundle\Model\Entry
+	*
+	* @return Juceveju\FlowchartBundle\Model\Entry
+	*/
+	public function getEntryByName($name)
+	{
+		foreach ($this->entries as $key => $entry) {
+			if ($entry->getName() == $name)
+				return $entry;
+		}
+
+		throw new \Exception("Entry not found", 404);
+	}
+
+	/**
+	*
+	* returns an instance of Juceveju\FlowchartBundle\Model\Entry
+	*
+	* @return Juceveju\FlowchartBundle\Model\Entry
+	*/
+	public function getEntryById($id)
+	{
+		foreach ($this->entries as $key => $entry) {
+			if ($entry->getId() == $id)
+				return $entry;
+		}
+
+		throw new \Exception("Entry not found", 404);		
+	}
+
+	/**
+	*
+	* returns an instance of Juceveju\FlowchartBundle\Model\Ending
+	*
+	* @return Juceveju\FlowchartBundle\Model\Ending
+	*/
+	public function getEndingByName($name)
+	{
+		foreach ($this->endings as $key => $ending) {
+			if ($ending->getName() == $name)
+				return $ending;
+		}
+
+		throw new \Exception("Ending not found", 404);
+	}
+
+	/**
+	*
+	* returns an instance of Juceveju\FlowchartBundle\Model\Ending
+	*
+	* @return Juceveju\FlowchartBundle\Model\Node
+	*/
+	public function getEndingById($id)
+	{
+		foreach ($this->endings as $key => $ending) {
+			if ($ending->getId() == $id)
+				return $ending;
+		}
+
+		throw new \Exception("Ending not found", 404);		
+	}
+
+	/**
+	*
+	* returns an instance of Juceveju\FlowchartBundle\Model\Node
+	*
+	* @return Juceveju\FlowchartBundle\Model\Node
+	*/
+	public function getNodeByName($name)
+	{
+		foreach ($this->nodes as $key => $node) {
+			if ($node->getName() == $name)
+				return $node;
+		}
+
+		throw new \Exception("Node not found", 404);		
+	}
+
+	/**
+	*
+	* returns an instance of Juceveju\FlowchartBundle\Model\Node
+	*
+	* @return Juceveju\FlowchartBundle\Model\Node
+	*/
+	public function getNodeById($id)
+	{
+		foreach ($this->nodes as $key => $node) {
+			if ($node->getId() == $id)
+				return $node;
+		}
+
+		throw new \Exception("Node not found", 404);			
+	}
+
+	/**
+	*
+	* returns an instance of Juceveju\FlowchartBundle\Model\Connection
+	*
+	* @return Juceveju\FlowchartBundle\Model\Connection
+	*/
+	public function getConnectionByName($name)
+	{
+		foreach ($this->connections as $key => $conn) {
+			if ($conn->getName() == $name)
+				return $conn;
+		}
+
+		throw new \Exception("Connection not found", 404);			
+	}
+
+	/**
+	*
+	* returns an instance of Juceveju\FlowchartBundle\Model\Connection
+	*
+	* @return Juceveju\FlowchartBundle\Model\Connection
+	*/
+	public function getConnectionById($id)
+	{
+		foreach ($this->connections as $key => $conn) {
+			if ($conn->getId() == $id)
+				return $conn;
+		}
+
+		throw new \Exception("Connection not found", 404);				
+	}
+
+	/**
+	*
 	* add a new item to the entries array
  	*
 	* @param Entry $entry
@@ -115,6 +273,7 @@ class Flowchart implements FlowchartInterface
 	{
 		// @TODO: check that name and id are uniques
 		$this->entries[] = $entry;
+		$this->elements['entries'][] = $entry;
 	}
 
 	/**
@@ -123,15 +282,24 @@ class Flowchart implements FlowchartInterface
 	*
 	* @param Entry $entry
  	*/
-	public function removeEntry($entry)
+	public function removeEntry(Entry $entry)
 	{
+		// TODO: check that it does not belong to any connection
 		foreach ($this->entries as $key => $ent) {
 			if ($ent->getId() == $entry->getId()){
-				unset($this->entries[$key]);
-				return true;
+				$conn = $this->belongToConnection($entry);
+				if ($conn === false)
+				{ 
+					unset($this->entries[$key]);
+					unset($this->elements['entries'][$key]);
+					return true;
+				} else {
+					throw new \Exception("The ending point cannot be removed because belong to the connection: " . $conn->getId(), 404);
+				}				
 			}
 		}
-		return false;
+
+		throw new \Exception("Entry not found", 404);
 	}
 
 	/**
@@ -155,6 +323,7 @@ class Flowchart implements FlowchartInterface
 	{
 		// @TODO: check that name and id are uniques
 		$this->endings[] = $ending;
+		$this->elements['endings'][] = $ending;
 	}
 
 	/**
@@ -163,32 +332,86 @@ class Flowchart implements FlowchartInterface
 	*
 	* @param Ending $ending
  	*/
-	public function removeEnding($ending)
+	public function removeEnding(Ending $ending)
 	{
+		// TODO: check that it does not belong to any connection
 		foreach ($this->endings as $key => $end) {
 			if ($end->getId() == $ending->getId()){
-				unset($this->endings[$key]);
-				return true;
+				$conn = $this->belongToConnection($ending);
+				if ($conn === false)
+				{ 
+					unset($this->endings[$key]);
+					unset($this->elements['endings'][$key]);
+					return true;
+				} else {
+					throw new \Exception("The ending point cannot be removed because belong to the connection: " . $conn->getId(), 404);
+				}			
 			}
 		}
 
-		return false;
+		throw new \Exception("Ending not found", 404);
 	}
 
 	/**
 	*
-	* establish a connection between two elements
+	* returns an array of Juceveju\FlowchartBundle\Model\Node
 	*
-	* @param Element $startElement
-	* @param Element $endingElement
-	* @param string $name
-	* @param string $id
+	* @return array
 	*/
-	public function setConnection(Element $startElement, Element $endingElement, $name, $id=null)
+	public function getNodes()
+	{
+		return $this->nodes;
+	}
+
+	/**
+	*
+	* add a new item to the nodes array
+ 	*
+	* @param Entry $node
+	*/
+	public function addNode(Node $node)
 	{
 		// @TODO: check that name and id are uniques
-		$conn = new Connection($startElement, $endingElement, $name, $id);
-		$this->connections[$conn];
+		$this->nodes[] = $node;
+		$this->elements['nodes'][] = $node;
+	}
+
+	/**
+	*
+	* remove an item from the nodes array
+	*
+	* @param Ending $node
+ 	*/
+	public function removeNode(Node $node)
+	{ 
+		foreach ($this->nodes as $key => $n) {
+			if ($node->getId() == $n->getId()){
+				$conn = $this->belongToConnection($node);
+				if ($conn === false)
+				{ 
+					unset($this->nodes[$key]);
+					unset($this->elements['nodes'][$key]);
+					return true;
+				} else {
+					throw new \Exception("The node cannot be removed because belong to the connection: " . $conn->getId(), 404);
+				}
+			}
+		}
+
+		throw new \Exception("Node not found", 404);
+	}
+
+	/**
+	*
+	* add a new item to the connections array
+ 	*
+	* @param Connection $connection
+	*/
+	public function addConnection(Connection $connection)
+	{
+		// @TODO: check that name and id are uniques
+		$this->connections[] = $connection;
+		$this->elements['connections'][] = $connection;
 	}
 
 	/**
@@ -197,7 +420,7 @@ class Flowchart implements FlowchartInterface
 	*
 	* @param Connection $connection
 	*/
-	public function removeConnection($connection)
+	public function removeConnection(Connection $connection)
 	{
 		foreach ($this->connections as $key => $conn) {
 			if ($conn->getId() == $connection->getId()){
@@ -205,7 +428,8 @@ class Flowchart implements FlowchartInterface
 				return true;
 			}
 		}
-		return false;
+		
+		throw new \Exception("Connection not found", 404);
 	}
 
 	/**
@@ -217,6 +441,28 @@ class Flowchart implements FlowchartInterface
 	public function getConnections()
 	{
 		return $this->connections;
+	}
+
+	/**
+	*
+	* If the element belong to connection returns this connection, in other case throw a not found exception
+	*
+	* @param Element $element
+	* @return Connection
+	*/
+	public function belongToConnection(Element $element)
+	{
+		foreach ($this->connections as $connection) {
+			// check start element
+			if ($connection->getStartElement()->getId() == $element->getId())
+				return $connection;
+
+			// check end element
+			if ($connection->getEndElement()->getId() == $element->getId())
+				return $connection;
+		}
+		return false;
+		//throw new \Exception("Element does not belong to any connection", 404);	
 	}
 
 	/*

@@ -11,13 +11,18 @@
 
 namespace Juceveju\FlowchartBundle\Model;
 
+use Juceveju\FlowchartBundle\Model\Element;
+use Juceveju\FlowchartBundle\Model\Entry;
+use Juceveju\FlowchartBundle\Model\Ending;
+use Juceveju\FlowchartBundle\Model\Node;
+use Juceveju\FlowchartBundle\Model\Connection;
+
 interface FlowchartInterface
 {
 
     /**
      * return the name of the flowchart
      *
-     * @return string
      */
     public function getName();
 
@@ -30,7 +35,6 @@ interface FlowchartInterface
     /**
      * return all elements in the flowchart
      *
-     * @return array of Elements
      */
     public function getElements();
 
@@ -38,18 +42,17 @@ interface FlowchartInterface
 	*
 	* add a new item to the elements array
  	*/
-	public function addElement($element);
+	public function addElement(Element $element);
 
 	/**
 	*
 	* remove an item from the elements array
  	*/
-	public function removeElement($element);
+	public function removeElement(Element $element);
 
     /**
      * return all entry elements in the chart
      *
-     * @return array of Elements
      */
     public function getEntries();
 
@@ -57,18 +60,17 @@ interface FlowchartInterface
 	*
 	* add a new item to the enties array
  	*/
-	public function addEntry($entry);
+	public function addEntry(Entry $entry);
 
 	/**
 	*
 	* remove an item from the entries array
  	*/
-	public function removeEntry($entry);
+	public function removeEntry(Entry $entry);
 
     /**
      * return all ending elements in the chart
      *
-     * @return array of Elements
      */
     public function getEndings();    
 
@@ -76,31 +78,96 @@ interface FlowchartInterface
 	*
 	* add a new item to the endings array
  	*/
-    public function addEnding($ending);
+    public function addEnding(Ending $ending);
+
+	/**
+	*
+	* remove an item from the nodes array
+ 	*/
+	public function removeNode(Node $ending);
+
+    /**
+     * return all node elements in the chart
+     *
+     */
+    public function getNodes();    
+
+	/**
+	*
+	* add a new item to the nodes array
+ 	*/
+    public function addNode(Node $ending);
 
 	/**
 	*
 	* remove an item from the endings array
  	*/
-	public function removeEnding($ending);
+	public function removeEnding(Ending $ending);
 
     /**
     *
     * set connection between two elements
     */
-    public function setConnection($connectionId, $element1, $element2);
+    public function addConnection(Connection $connection);
 
     /**
     *
     * remove connection between two elements
     */
-    public function removeConnection();
+    public function removeConnection(Connection $connection);
+
+	/**
+	*
+	* returns an instance of Juceveju\FlowchartBundle\Model\Entry
+	*/
+	public function getEntryByName($name);
+
+	/**
+	*
+	* returns an instance of Juceveju\FlowchartBundle\Model\Entry
+	*/
+	public function getEntryById($id);
+
+	/**
+	*
+	* returns an instance of Juceveju\FlowchartBundle\Model\Ending
+	*/
+	public function getEndingByName($name);
+
+	/**
+	*
+	* returns an instance of Juceveju\FlowchartBundle\Model\Ending
+	*/
+	public function getEndingById($id);
+
+	/**
+	*
+	* returns an instance of Juceveju\FlowchartBundle\Model\Node
+	*/
+	public function getNodeByName($name);
+
+	/**
+	*
+	* returns an instance of Juceveju\FlowchartBundle\Model\Node
+	*/
+	public function getNodeById($id);
+
+	/**
+	*
+	* returns an instance of Juceveju\FlowchartBundle\Model\Connection
+	*/
+	public function getConnectionByName($name);
+
+	/**
+	*
+	* returns an instance of Juceveju\FlowchartBundle\Model\Connection
+	*/
+	public function getConnectionById($id);
 
 
     /**
      * return all possible itineraries in the chart
      *
-     * @return array of Itineraries
      */
     //public function getItineraries();   
 

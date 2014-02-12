@@ -12,6 +12,8 @@
 namespace Juceveju\FlowchartBundle\Model;
 
 use Juceveju\FlowchartBundle\Model\Element;
+use Juceveju\FlowchartBundle\Model\Ending;
+use Juceveju\FlowchartBundle\Model\Entry;
 
 class Connection implements ConnectionInterface
 {
@@ -87,6 +89,8 @@ class Connection implements ConnectionInterface
 	*/
 	public function setStartElement(Element $element)
 	{
+		if($element instanceof Ending)
+			throw new \Exception("Ending element cannot be the origin of the connection", 500);		
 		$this->startElement = $element;
 	}
 
@@ -107,6 +111,8 @@ class Connection implements ConnectionInterface
 	*/
 	public function setEndElement(Element $element)
 	{
+		if($element instanceof Entry)
+			throw new \Exception("Entry element cannot be the end of the connection", 500);		
 		$this->endingElement = $element;
 	} 
 

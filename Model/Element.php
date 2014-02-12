@@ -18,7 +18,7 @@ class Element implements ElementInterface
 
 	protected $name;
 	protected $id;
-
+	//protected $type;
 
 	public function __construct($name, $id=null){
 		$this->setName($name);

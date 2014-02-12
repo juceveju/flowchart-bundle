@@ -10,8 +10,6 @@
 
 namespace Juceveju\FlowchartBundle\Model;
 
-use Juceveju\FlowchartBundle\Model\Connection;
-
 interface ElementInterface
 {
 

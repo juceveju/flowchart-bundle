@@ -46,13 +46,13 @@ interface ConnectionInterface
 	*
 	* @param Element $element
 	*/
-	public function setStartElement(Element $element){}
+	public function setStartElement(Element $element);
 
 	/**
 	*
 	* returns the initial point of the connection
 	*/
-	public function getStartElement(){}
+	public function getStartElement();
 
 	/**
 	*
@@ -60,11 +60,11 @@ interface ConnectionInterface
 	*
 	* @param Element $element	
 	*/
-	public function setEndElement(Element $element){} 
+	public function setEndElement(Element $element);
 
 	/**
 	*
 	* returns the ending point of the connection
 	*/
-	public function getEndElement(){}
+	public function getEndElement();
 }

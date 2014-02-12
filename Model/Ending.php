@@ -12,7 +12,6 @@
 namespace Juceveju\FlowchartBundle\Model;
 
 use Juceveju\FlowchartBundle\Model\ElementInterface;
-use Juceveju\FlowchartBundle\Model\Element;
 
 class Ending extends Element implements ElementInterface
 {
