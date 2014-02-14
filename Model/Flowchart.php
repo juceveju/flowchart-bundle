@@ -23,10 +23,6 @@ class Flowchart implements FlowchartInterface
 
 	protected $name;
 	protected $elements = array();
-	protected $entries  = array();
-	protected $endings  = array();
-	protected $nodes    = array();
-	protected $connections = array();
 	//protected $itineraries  = array();
 
 	public function __construct($name, $elements=array(), $connections=array())
@@ -132,7 +128,7 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function getEntries()
 	{
-		return $this->entries;
+		return $this->elements['entries'];
 	}
 
 	/**
@@ -143,7 +139,7 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function getEntryByName($name)
 	{
-		foreach ($this->entries as $key => $entry) {
+		foreach ($this->elements['entries'] as $key => $entry) {
 			if ($entry->getName() == $name)
 				return $entry;
 		}
@@ -159,7 +155,7 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function getEntryById($id)
 	{
-		foreach ($this->entries as $key => $entry) {
+		foreach ($this->elements['entries'] as $key => $entry) {
 			if ($entry->getId() == $id)
 				return $entry;
 		}
@@ -175,7 +171,7 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function getEndingByName($name)
 	{
-		foreach ($this->endings as $key => $ending) {
+		foreach ($this->elements['endings'] as $key => $ending) {
 			if ($ending->getName() == $name)
 				return $ending;
 		}
@@ -191,7 +187,7 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function getEndingById($id)
 	{
-		foreach ($this->endings as $key => $ending) {
+		foreach ($this->elements['endings'] as $key => $ending) {
 			if ($ending->getId() == $id)
 				return $ending;
 		}
@@ -207,7 +203,7 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function getNodeByName($name)
 	{
-		foreach ($this->nodes as $key => $node) {
+		foreach ($this->elements['nodes'] as $key => $node) {
 			if ($node->getName() == $name)
 				return $node;
 		}
@@ -223,7 +219,7 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function getNodeById($id)
 	{
-		foreach ($this->nodes as $key => $node) {
+		foreach ($this->elements['nodes'] as $key => $node) {
 			if ($node->getId() == $id)
 				return $node;
 		}
@@ -239,7 +235,7 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function getConnectionByName($name)
 	{
-		foreach ($this->connections as $key => $conn) {
+		foreach ($this->elements['connections'] as $key => $conn) {
 			if ($conn->getName() == $name)
 				return $conn;
 		}
@@ -255,7 +251,7 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function getConnectionById($id)
 	{
-		foreach ($this->connections as $key => $conn) {
+		foreach ($this->elements['connections'] as $key => $conn) {
 			if ($conn->getId() == $id)
 				return $conn;
 		}
@@ -272,7 +268,7 @@ class Flowchart implements FlowchartInterface
 	public function addEntry(Entry $entry)
 	{
 		// @TODO: check that name and id are uniques
-		$this->entries[] = $entry;
+		//$this->entries[] = $entry;
 		$this->elements['entries'][] = $entry;
 	}
 
@@ -285,16 +281,16 @@ class Flowchart implements FlowchartInterface
 	public function removeEntry(Entry $entry)
 	{
 		// TODO: check that it does not belong to any connection
-		foreach ($this->entries as $key => $ent) {
+		foreach ($this->elements['entries'] as $key => $ent) {
 			if ($ent->getId() == $entry->getId()){
 				$conn = $this->belongToConnection($entry);
 				if ($conn === false)
 				{ 
-					unset($this->entries[$key]);
+					//unset($this->entries[$key]);
 					unset($this->elements['entries'][$key]);
 					return true;
 				} else {
-					throw new \Exception("The ending point cannot be removed because belong to the connection: " . $conn->getId(), 404);
+					throw new \Exception("The entry cannot be removed because belong to the connection: " . $conn->getId(), 404);
 				}				
 			}
 		}
@@ -310,7 +306,7 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function getEndings()
 	{
-		return $this->endings;
+		return $this->elements['endings'];
 	}
 
 	/**
@@ -322,7 +318,7 @@ class Flowchart implements FlowchartInterface
 	public function addEnding(Ending $ending)
 	{
 		// @TODO: check that name and id are uniques
-		$this->endings[] = $ending;
+		//$this->endings[] = $ending;
 		$this->elements['endings'][] = $ending;
 	}
 
@@ -335,12 +331,12 @@ class Flowchart implements FlowchartInterface
 	public function removeEnding(Ending $ending)
 	{
 		// TODO: check that it does not belong to any connection
-		foreach ($this->endings as $key => $end) {
+		foreach ($this->elements['endings'] as $key => $end) {
 			if ($end->getId() == $ending->getId()){
 				$conn = $this->belongToConnection($ending);
 				if ($conn === false)
 				{ 
-					unset($this->endings[$key]);
+					//unset($this->endings[$key]);
 					unset($this->elements['endings'][$key]);
 					return true;
 				} else {
@@ -360,7 +356,7 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function getNodes()
 	{
-		return $this->nodes;
+		return $this->elements['nodes'];
 	}
 
 	/**
@@ -372,7 +368,7 @@ class Flowchart implements FlowchartInterface
 	public function addNode(Node $node)
 	{
 		// @TODO: check that name and id are uniques
-		$this->nodes[] = $node;
+		//$this->nodes[] = $node;
 		$this->elements['nodes'][] = $node;
 	}
 
@@ -384,12 +380,12 @@ class Flowchart implements FlowchartInterface
  	*/
 	public function removeNode(Node $node)
 	{ 
-		foreach ($this->nodes as $key => $n) {
+		foreach ($this->elements['nodes'] as $key => $n) {
 			if ($node->getId() == $n->getId()){
 				$conn = $this->belongToConnection($node);
 				if ($conn === false)
 				{ 
-					unset($this->nodes[$key]);
+					//unset($this->nodes[$key]);
 					unset($this->elements['nodes'][$key]);
 					return true;
 				} else {
@@ -410,7 +406,7 @@ class Flowchart implements FlowchartInterface
 	public function addConnection(Connection $connection)
 	{
 		// @TODO: check that name and id are uniques
-		$this->connections[] = $connection;
+		//$this->connections[] = $connection;
 		$this->elements['connections'][] = $connection;
 	}
 
@@ -422,9 +418,10 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function removeConnection(Connection $connection)
 	{
-		foreach ($this->connections as $key => $conn) {
+		foreach ($this->elements['connections'] as $key => $conn) {
 			if ($conn->getId() == $connection->getId()){
-				unset($this->connections[$key]);
+				//unset($this->connections[$key]);
+				unset($this->elements['connections'][$key]);
 				return true;
 			}
 		}
@@ -440,7 +437,7 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function getConnections()
 	{
-		return $this->connections;
+		return $this->elements['connections'];
 	}
 
 	/**
@@ -452,7 +449,7 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function belongToConnection(Element $element)
 	{
-		foreach ($this->connections as $connection) {
+		foreach ($this->elements['connections'] as $connection) {
 			// check start element
 			if ($connection->getStartElement()->getId() == $element->getId())
 				return $connection;

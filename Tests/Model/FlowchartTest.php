@@ -36,7 +36,6 @@ class FlowchartTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('Juceveju\FlowchartBundle\Model\Flowchart', $flowchart);
 		$this->assertEquals('My new chart', $flowchart->getName());
 		$elements = $flowchart->getElements();
-
 		// check entries 
 		$this->assertArrayHasKey('entries', $elements);
         $this->assertNotEmpty($flowchart->getEntries());
@@ -81,7 +80,6 @@ class FlowchartTest extends \PHPUnit_Framework_TestCase
 	*/
 	public function testAddElement($flowchart)
 	{
-
 		// add ending
 		$flowchart->addElement(new Ending('Ending 3', 'Ending3'));
 		$this->assertCount(3, $flowchart->getEndings());
@@ -106,8 +104,7 @@ class FlowchartTest extends \PHPUnit_Framework_TestCase
 	{
 		$newElement = new Element('Another element');
 		$newchart = $this->getChart('Another chart');
-		$newchart->addElement($newElement);
-		
+		$newchart->addElement($newElement);	
 	}
 
 	/**
@@ -181,7 +178,6 @@ class FlowchartTest extends \PHPUnit_Framework_TestCase
 	*/
 	public function testNodeNotFoundException($flowchart)
 	{
-		// node not found
 		$node = $flowchart->getNodeByName('Node 9999');
 	}	
 
@@ -194,7 +190,6 @@ class FlowchartTest extends \PHPUnit_Framework_TestCase
 	*/
 	public function testEndingNotFoundException($flowchart)
 	{
-		// ending not found
 		$ending = $flowchart->getEndingByName('Ending 9999');
 	}	
 
@@ -207,7 +202,6 @@ class FlowchartTest extends \PHPUnit_Framework_TestCase
 	*/
 	public function testConnectionNotFoundException($flowchart)
 	{
-		// connection not found
 		$conn = $flowchart->getConnectionById('co n998-n999');
 	}	
 	
@@ -223,53 +217,85 @@ class FlowchartTest extends \PHPUnit_Framework_TestCase
 
 	/**
 	*
+	* Test remove element that belong to connection -> exception must be thrown
+	*
 	* @depends testAddElement
+	* @expectedException Exception
+	* @expectedExceptionMessage cannot be removed because belong to the connection
 	*/
-	public testRemoveElementThatBelongToConection(){
+	public function testRemoveElementThatBelongToConection($flowchart)
+	{
+		$entries = $flowchart->getEntries();
+		$flowchart->removeEntry($entries[0]);
+	}
 
-
+	/**
+	* Test remove an inexistent element -> exception must be trhown
+	*
+	* @depends testAddElement
+	* @expectedException Exception
+	* @expectedExceptionMessage Entry not found
+	*/
+	public function testRemoveEntryNotFound($flowchart)
+	{
+		$entries = $flowchart->getEntries();
+		$flowchart->removeEntry(new Entry('Entry 999', 'E999'));
 	}
 
 	/**
 	*
-	* @depends testAddElement
+	* Test remove elements that does not belong to any connection
 	*
+	* @depends testAddElement
 	*/
-	public testRemoveElements()
+	public function testRemoveElements($flowchart)
 	{
 		// remove entry
+		$entries =$flowchart->getEntries();
+		$flowchart->removeEntry($entries[2]);
+		$this->assertNotContains($entries[2], $flowchart->getEntries());
 
 		// remove ending
+		$endings = $flowchart->getEndings();
+		$flowchart->removeEnding($endings[2]);
+		$this->assertNotContains($endings[2], $flowchart->getEndings());
 
 		// remove node
-
-		// remove connection
+		$nodes   = $flowchart->getNodes();
+		$flowchart->removeNode($nodes[2]);
+		$this->assertNotContains($nodes[2], $flowchart->getNodes());
 	}
-
 
 	/**
 	*
-	* @expectedException Exception
-	* @expectedExceptionMessage The Element has an invalid type
+	* Test remove one connection and its elements
+	*
+	* @depends testAddElement
 	*/
-	/*public function testRemoveElementException()
+	public function testRemoveConnectionAndItsElements($flowchart)
 	{
-		$newElement = new Entry('Another element');
-		$newchart = $this->getChart('Another chart');
-		$newchart->removeElement($newElement);
-		
-	}*/
+		$conn = $flowchart->getConnectionById('e0-n0');
+		$flowchart->removeConnection($conn);
+		$this->assertNotContains($conn, $flowchart->getConnections());
 
+		$entries =$flowchart->getEntries();
+		$flowchart->removeEntry($entries[0]);
+		$this->assertNotContains($entries[0], $flowchart->getEntries());
+
+		$nodes = $flowchart->getNodes();
+		$flowchart->removeNode($nodes[0]);
+		$this->assertNotContains($nodes[0], $flowchart->getNodes());
+	}
 
 
 	private function getChart($name)
 	{
-		$elements = array(new Entry('Entry 1'), 
-							new Entry('Entry 2'),
-							new Node('Node 1'), 
-							new Node('Node 2'),
-							new Ending('Ending 1'), 
-							new Ending('Ending 2'));
+		$elements = array(new Entry('Entry 1', 'E1'), 
+							new Entry('Entry 2', 'E2'),
+							new Node('Node 1', 'N1'), 
+							new Node('Node 2', 'N2'),
+							new Ending('Ending 1', 'Ed1'), 
+							new Ending('Ending 2', 'Ed2'));
 		$connections = array();
 		$newChart    = new Flowchart($name, $elements, $connections);
 		return $newChart;
