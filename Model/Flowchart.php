@@ -461,8 +461,8 @@ class Flowchart implements FlowchartInterface
 			if ($connection->getEndElement()->getId() == $element->getId())
 				return $connection;
 		}
+		
 		return false;
-		//throw new \Exception("Element does not belong to any connection", 404);	
 	}
 
 	/*
