@@ -74,6 +74,25 @@ class FlowchartTest extends \PHPUnit_Framework_TestCase
 
 	/**
 	*
+	* test add existing connection to chart
+	*
+	* @depends testAddConnection
+	* @expectedException Exception
+	* @expectedExceptionMessage Connection already exists	
+	*/
+	public function testAddExistingConnection($flowchart)
+	{
+		// set connection between Entry and Node
+		$entries = $flowchart->getEntries();
+		$nodes   = $flowchart->getNodes();
+		$endings = $flowchart->getEndings();
+		$conn1   =  new Connection($entries[0], $nodes[0], 'connection e0-n0', 'e0-n0'); 
+		$this->assertInstanceOf('Juceveju\FlowchartBundle\Model\Connection', $conn1);
+		$flowchart->addConnection($conn1);
+	}	
+
+	/**
+	*
 	* test add element from chart
 	*
 	* @depends testAddConnection
@@ -106,6 +125,45 @@ class FlowchartTest extends \PHPUnit_Framework_TestCase
 		$newchart = $this->getChart('Another chart');
 		$newchart->addElement($newElement);	
 	}
+
+	/**
+	*
+	* Test add Entry that already exist
+	*
+	* @depends testCreation
+	* @expectedException Exception
+	* @expectedExceptionMessage Entry already exists	
+	*/
+	public function testAddEntryAlreadyExists($flowchart)
+	{
+		$flowchart->addEntry(new Entry('Entry 1', 'E1'));
+	}
+
+	/**
+	*
+	* Test add Ending that already exist
+	*
+	* @depends testCreation
+	* @expectedException Exception
+	* @expectedExceptionMessage Ending already exists	
+	*/
+	public function testAddEndingAlreadyExists($flowchart)
+	{
+		$flowchart->addEnding(new Ending('Ending 1', 'E1'));
+	}
+
+	/**
+	*
+	* Test add Node that already exist
+	*
+	* @depends testCreation
+	* @expectedException Exception
+	* @expectedExceptionMessage Node already exists	
+	*/
+	public function testAddNodeAlreadyExists($flowchart)
+	{
+		$flowchart->addNode(new Node('Node 1', 'N1'));
+	}	
 
 	/**
 	*

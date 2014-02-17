@@ -10,6 +10,8 @@
 
 namespace Juceveju\FlowchartBundle\Model;
 
+use Juceveju\FlowchartBundle\Model\Element;
+
 interface ElementInterface
 {
 
@@ -36,4 +38,40 @@ interface ElementInterface
 	* Set the id of the element
  	*/
 	public function setId($id);
+
+	/**
+	*
+	* returns all the outgoing connections in the element
+	*/
+	public function getOutgoingConnections();
+
+	/**
+	*
+	* returns all the incoming connections in the element
+	*/
+	public function getIncomingConnections();
+
+	/**
+	*
+	* Add an incoming connection to the element
+	*/
+	public function addIncomingConnection(Connection $conn);
+
+	/**
+	*
+	* Add an outgoing connection to the element
+	*/
+	public function addOutgoingConnection(Connection $conn);	
+
+	/**
+	*
+	* Remove an outgoing connection from the element
+	*/
+	public function removeOutgoingConnection(Connection $conn);		
+
+	/**
+	*
+	* Remove an incoming connection from the element
+	*/
+	public function removeIncomingConnection(Connection $conn);		
 }

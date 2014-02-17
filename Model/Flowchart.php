@@ -28,6 +28,10 @@ class Flowchart implements FlowchartInterface
 	public function __construct($name, $elements=array(), $connections=array())
 	{
 		$this->setName($name);
+		$this->elements['entries']     = array();
+		$this->elements['nodes']       = array();
+		$this->elements['endings']     = array();
+		$this->elements['connections'] = array();
 		foreach ($elements as $element) 
 			$this->addElement($element);
 		foreach ($connections as $connections) 
@@ -139,12 +143,28 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function getEntryByName($name)
 	{
+		$entry = $this->checkEntryNameExists($name);
+
+		if ($entry === false)
+			throw new \Exception("Entry not found", 404);
+		else
+			return $entry;
+	}
+
+	/**
+	*
+	* check if exist ans entry in the flowchart wiht the selected name
+	*
+	* @param string $name
+	* @return Entry || false
+	*/
+	protected function checkEntryNameExists($name)
+	{
 		foreach ($this->elements['entries'] as $key => $entry) {
 			if ($entry->getName() == $name)
 				return $entry;
 		}
-
-		throw new \Exception("Entry not found", 404);
+		return false;
 	}
 
 	/**
@@ -155,12 +175,28 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function getEntryById($id)
 	{
+		$entry = $this->checkEntryIdExists($id);
+
+		if ($entry === false)
+			throw new \Exception("Entry not found", 404);		
+		else
+			return $entry;
+	}
+
+	/**
+	*
+	* check if exist ans entry in the flowchart wiht the selected name
+	*
+	* @param string $id
+	* @return Entry || false
+	*/
+	protected function checkEntryIdExists($id)
+	{
 		foreach ($this->elements['entries'] as $key => $entry) {
 			if ($entry->getId() == $id)
 				return $entry;
 		}
-
-		throw new \Exception("Entry not found", 404);		
+		return false;
 	}
 
 	/**
@@ -171,12 +207,27 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function getEndingByName($name)
 	{
+		$ending = $this->checkEndingNameExists($name);
+		if ($ending === false)
+			throw new \Exception("Ending not found", 404);
+		else
+			return $ending;
+	}
+
+	/**
+	*
+	* check if exist an ending in the flowchart wiht the selected name
+	*
+	* @param string $name
+	* @return Entry || false
+	*/
+	protected function checkEndingNameExists($name)
+	{
 		foreach ($this->elements['endings'] as $key => $ending) {
 			if ($ending->getName() == $name)
 				return $ending;
 		}
-
-		throw new \Exception("Ending not found", 404);
+		return false;
 	}
 
 	/**
@@ -187,12 +238,27 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function getEndingById($id)
 	{
+		$ending = $this->checkEndingIdExists($id);
+		if ($ending === false)
+			throw new \Exception("Ending not found", 404);	
+		else	
+			return $ending;
+	}
+
+	/**
+	*
+	* check if exist an ending in the flowchart wiht the selected id
+	*
+	* @param string $id
+	* @return Entry || false
+	*/
+	protected function checkEndingIdExists($id)
+	{
 		foreach ($this->elements['endings'] as $key => $ending) {
 			if ($ending->getId() == $id)
 				return $ending;
 		}
-
-		throw new \Exception("Ending not found", 404);		
+		return false;
 	}
 
 	/**
@@ -203,12 +269,27 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function getNodeByName($name)
 	{
+		$node = $this->checkNodeNameExists($name);
+		if ($node === false)
+			throw new \Exception("Node not found", 404);	
+		else	
+			return $node;
+	}
+
+	/**
+	*
+	* check if exist an ending in the flowchart wiht the selected name
+	*
+	* @param string $name
+	* @return Node || false
+	*/
+	protected function checkNodeNameExists($name)
+	{
 		foreach ($this->elements['nodes'] as $key => $node) {
 			if ($node->getName() == $name)
 				return $node;
 		}
-
-		throw new \Exception("Node not found", 404);		
+		return false;
 	}
 
 	/**
@@ -218,13 +299,28 @@ class Flowchart implements FlowchartInterface
 	* @return Juceveju\FlowchartBundle\Model\Node
 	*/
 	public function getNodeById($id)
+	{	
+		$node = $this->checkNodeIdExists($id);
+		if ($node === false)
+			throw new \Exception("Node not found", 404);	
+		else	
+			return $node;				
+	}
+
+	/**
+	*
+	* check if exist an ending in the flowchart wiht the selected id
+	*
+	* @param string $id
+	* @return Node || false
+	*/
+	protected function checkNodeIdExists($id)
 	{
 		foreach ($this->elements['nodes'] as $key => $node) {
 			if ($node->getId() == $id)
 				return $node;
 		}
-
-		throw new \Exception("Node not found", 404);			
+		return false;
 	}
 
 	/**
@@ -267,9 +363,11 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function addEntry(Entry $entry)
 	{
-		// @TODO: check that name and id are uniques
-		//$this->entries[] = $entry;
-		$this->elements['entries'][] = $entry;
+		if (!$this->checkEntryIdExists($entry->getId()) && !$this->checkEntryNameExists($entry->getName()))
+			$this->elements['entries'][] = $entry;
+		else
+			throw new \Exception("Entry already exists in the flowchart", 500);
+			
 	}
 
 	/**
@@ -280,7 +378,6 @@ class Flowchart implements FlowchartInterface
  	*/
 	public function removeEntry(Entry $entry)
 	{
-		// TODO: check that it does not belong to any connection
 		foreach ($this->elements['entries'] as $key => $ent) {
 			if ($ent->getId() == $entry->getId()){
 				$conn = $this->belongToConnection($entry);
@@ -317,9 +414,11 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function addEnding(Ending $ending)
 	{
-		// @TODO: check that name and id are uniques
-		//$this->endings[] = $ending;
-		$this->elements['endings'][] = $ending;
+		if (!$this->checkEndingIdExists($ending->getId()) && !$this->checkEndingNameExists($ending->getName()))
+			$this->elements['endings'][] = $ending;
+		else
+			throw new \Exception("Ending already exists in the flowchart", 500);	
+		
 	}
 
 	/**
@@ -336,7 +435,6 @@ class Flowchart implements FlowchartInterface
 				$conn = $this->belongToConnection($ending);
 				if ($conn === false)
 				{ 
-					//unset($this->endings[$key]);
 					unset($this->elements['endings'][$key]);
 					return true;
 				} else {
@@ -367,9 +465,10 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function addNode(Node $node)
 	{
-		// @TODO: check that name and id are uniques
-		//$this->nodes[] = $node;
-		$this->elements['nodes'][] = $node;
+		if (!$this->checkNodeIdExists($node->getId()) && !$this->checkNodeNameExists($node->getName()))
+			$this->elements['nodes'][] = $node;
+		else
+			throw new \Exception("Node already exists in the flowchart", 500);			
 	}
 
 	/**
@@ -385,7 +484,6 @@ class Flowchart implements FlowchartInterface
 				$conn = $this->belongToConnection($node);
 				if ($conn === false)
 				{ 
-					//unset($this->nodes[$key]);
 					unset($this->elements['nodes'][$key]);
 					return true;
 				} else {
@@ -405,9 +503,46 @@ class Flowchart implements FlowchartInterface
 	*/
 	public function addConnection(Connection $connection)
 	{
-		// @TODO: check that name and id are uniques
-		//$this->connections[] = $connection;
-		$this->elements['connections'][] = $connection;
+		if (!$this->checkConnectionIdExists($connection->getId()) 
+			&& !$this->checkConnectionNameExists($connection->getName()))
+		{
+			$this->elements['connections'][] = $connection;
+			$connection->getStartElement()->addOutgoingConnection($connection);
+			$connection->getEndElement()->addIncomingConnection($connection);
+		} else
+			throw new \Exception("Connection already exists in the flowchart", 500);			
+	}
+
+	/**
+	*
+	* check if exists a connection in the flowchart wiht the selected id
+	*
+	* @param string $id
+	* @return Connection || false
+	*/
+	protected function checkConnectionIdExists($id)
+	{
+		foreach ($this->elements['connections'] as $key => $conn) {
+			if ($conn->getId() == $id)
+				return $conn;
+		}
+		return false;
+	}
+
+	/**
+	*
+	* check if exists a connection in the flowchart wiht the selected name
+	*
+	* @param string $name
+	* @return Connection || false
+	*/
+	protected function checkConnectionNameExists($name)
+	{
+		foreach ($this->elements['connections'] as $key => $conn) {
+			if ($conn->getName() == $name)
+				return $conn;
+		}
+		return false;
 	}
 
 	/**
@@ -420,13 +555,15 @@ class Flowchart implements FlowchartInterface
 	{
 		foreach ($this->elements['connections'] as $key => $conn) {
 			if ($conn->getId() == $connection->getId()){
-				//unset($this->connections[$key]);
 				unset($this->elements['connections'][$key]);
+				// remove connection from element incoming connections and from outgoing connections	
+				$connection->getStartElement()->removeOutgoingConnection($connection);		
+				$connection->getEndElement()->removeIncomingConnection($connection);
 				return true;
 			}
 		}
 		
-		throw new \Exception("Connection not found", 404);
+		throw new \Exception("Connection not found", 404);	
 	}
 
 	/**
